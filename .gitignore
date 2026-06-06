@@ -8,6 +8,10 @@ __v0_jsx-dev-runtime.ts
 
 # Environment variables
 .env*.local
+.env*.development
+.env*.test
+.env*.production
+
 
 # Common ignores
 node_modules
@@ -15,3 +19,5 @@ node_modules
 .DS_Store
 
 /03-tokoBaju
+
+.env
