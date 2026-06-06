@@ -73,4 +73,3 @@ npm run start
 Proyek ini dibuat untuk tujuan pembelajaran dan portofolio.
 
 ---
-Dibuat dengan ❤️ oleh [Nama Anda/Vogueir Team]
