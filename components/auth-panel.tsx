@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { authClient } from '@/lib/auth-client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft } from 'lucide-react'
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 type Mode = 'login' | 'signup'
@@ -20,6 +22,17 @@ export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
   const [mode, setMode] = useState<Mode>(initialMode)
   const [animating, setAnimating] = useState(false)
 
+  const [direction, setDirection] = useState(0)
+  // State untuk mendeteksi layar desktop agar animasi geser hanya aktif di layar lebar
+  const [isDesktop, setIsDesktop] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   // form states
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -32,109 +45,133 @@ export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
     if (next === mode || animating) return
     setAnimating(true)
     setError('')
-    // after CSS transition (500ms), flip the mode
+    setDirection(next === 'signup' ? 1 : -1)
+    setMode(next)
     setTimeout(() => {
-      setMode(next)
       setAnimating(false)
-    }, 480)
+    }, 500)
   }
 
   // ── submit ─────────────────────────────────────────────────────────────────
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (loading) return
     setError('')
     setLoading(true)
+    
+    // Simulasi validasi dasar
+    if (password.length < 8) {
+      setError('Password harus minimal 8 karakter.')
+      setLoading(false)
+      return
+    }
+
     try {
       if (mode === 'login') {
-        await authClient.signIn.email({ email, password })
+        const { error } = await authClient.signIn.email({ email, password }) as any
+        if (error) throw new Error(error.message)
       } else {
-        await authClient.signUp.email({ email, password, name })
+        const { error } = await authClient.signUp.email({ email, password, name }) as any
+        if (error) throw new Error(error.message)
       }
       router.push('/')
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Terjadi kesalahan. Coba lagi.')
+      setError(err instanceof Error ? err.message : 'Email atau password salah.')
     } finally {
       setLoading(false)
     }
   }
 
-  // ── derived ────────────────────────────────────────────────────────────────
-  // When login: image is on RIGHT  → panel translateX(100%) when switching to signup
-  // When signup: image is on LEFT  → panel translateX(-100%) when switching to login
-  //
-  // We track "visual" mode (what's rendered) vs pending animation direction.
-  // Simpler: use a single boolean `isLogin` that flips AFTER the transition.
   const isLogin = mode === 'login'
 
   return (
-    <div
-      className="h-screen w-screen overflow-hidden flex"
-      style={{ backgroundColor: '#faf9f8', fontFamily: "'Inter', sans-serif", color: '#1a1a1a' }}
-    >
-      {/*
-        ┌──────────────────────────────────────────────────────────────────────┐
-        │  Two-panel trick:                                                    │
-        │  - A single container with position:relative, width:200%            │
-        │  - Left half = login form  |  Right half = signup form              │
-        │  - The image overlay slides on top with CSS transform               │
-        └──────────────────────────────────────────────────────────────────────┘
-      */}
-
-      {/* ── FORMS WRAPPER ──────────────────────────────────────────────────── */}
-      <div className="relative flex w-full h-full">
-
-        {/* LOGIN FORM — always left */}
-        <div
-          className="absolute inset-y-0 left-0 w-1/2 flex items-center justify-center px-8 md:px-16 transition-opacity duration-500"
-          style={{
-            opacity: isLogin ? 1 : 0,
-            pointerEvents: isLogin ? 'auto' : 'none',
-            zIndex: 1,
-          }}
+    <main className="h-[100dvh] w-full flex bg-[#faf9f8] font-sans text-[#1a1a1a] overflow-hidden">
+      <div className="relative flex w-full h-full overflow-hidden">
+        
+        {/* ── FORMS SECTION ────────────────────────────────────────────────── */}
+        <motion.div
+          className="w-full md:w-1/2 h-full flex flex-col p-6 sm:p-8 md:p-12 z-20 relative overflow-y-auto md:overflow-hidden bg-white md:bg-transparent"
+          animate={{ x: isDesktop ? (isLogin ? '0%' : '100%') : '0%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 120 }}
         >
-          <FormLogin
-            email={email} setEmail={setEmail}
-            password={password} setPassword={setPassword}
-            error={isLogin ? error : ''}
-            loading={loading && isLogin}
-            onSubmit={handleSubmit}
-            onSwitch={() => switchMode('signup')}
-          />
-        </div>
+          {/* Mobile App-style Header */}
+          <div className="flex items-center justify-between mb-10 md:mb-0 md:absolute md:top-10 md:left-10 w-full md:w-auto left-0 px-2 md:px-0">
+            <Link
+              href="/"
+              className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition md:p-0 md:hover:bg-transparent"
+              aria-label="Kembali"
+            >
+              <ArrowLeft size={22} strokeWidth={1.5} className="md:w-4 md:h-4" />
+            </Link>
+            <div className="md:hidden">
+              <span className="text-lg font-bold tracking-[4px] uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Vogueir
+              </span>
+            </div>
+            <div className="w-10 md:hidden" /> {/* Spacer centering */}
+          </div>
 
-        {/* SIGNUP FORM — always right */}
-        <div
-          className="absolute inset-y-0 right-0 w-1/2 flex items-center justify-center px-8 md:px-16 transition-opacity duration-500"
-          style={{
-            opacity: !isLogin ? 1 : 0,
-            pointerEvents: !isLogin ? 'auto' : 'none',
-            zIndex: 1,
-          }}
-        >
-          <FormSignUp
-            name={name} setName={setName}
-            email={email} setEmail={setEmail}
-            password={password} setPassword={setPassword}
-            error={!isLogin ? error : ''}
-            loading={loading && !isLogin}
-            onSubmit={handleSubmit}
-            onSwitch={() => switchMode('login')}
-          />
-        </div>
+          <div className="w-full max-w-[400px] mx-auto my-auto">
+            <AnimatePresence mode="wait" initial={false} custom={direction}>
+              {isLogin ? (
+                <motion.div
+                  key="login"
+                  custom={direction}
+                  variants={{
+                    enter: (dir: number) => ({ x: dir > 0 ? -40 : 40, opacity: 0 }),
+                    center: { x: 0, opacity: 1 },
+                    exit: (dir: number) => ({ x: dir < 0 ? -40 : 40, opacity: 0 })
+                  }}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                >
+                  <FormLogin
+                    email={email} setEmail={setEmail}
+                    password={password} setPassword={setPassword}
+                    error={error}
+                    loading={loading}
+                    onSubmit={handleSubmit}
+                    onSwitch={() => switchMode('signup')}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="signup"
+                  custom={direction}
+                  variants={{
+                    enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
+                    center: { x: 0, opacity: 1 },
+                    exit: (dir: number) => ({ x: dir < 0 ? 40 : -40, opacity: 0 })
+                  }}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                >
+                  <FormSignUp
+                    name={name} setName={setName}
+                    email={email} setEmail={setEmail}
+                    password={password} setPassword={setPassword}
+                    error={error}
+                    loading={loading}
+                    onSubmit={handleSubmit}
+                    onSwitch={() => switchMode('login')}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
 
-        {/* ── IMAGE PANEL — slides left/right ──────────────────────────────── */}
-        <div
-          className="absolute inset-y-0 w-1/2 overflow-hidden"
-          style={{
-            // login  → image on right  → translateX(100%)  = starting at right half
-            // signup → image on left   → translateX(0%)    = starting at left half
-            transform: isLogin ? 'translateX(100%)' : 'translateX(0%)',
-            transition: animating
-              ? 'transform 500ms cubic-bezier(0.77, 0, 0.175, 1)'
-              : 'transform 500ms cubic-bezier(0.77, 0, 0.175, 1)',
-            zIndex: 10,
-          }}
+        {/* ── DESKTOP IMAGE PANEL ─────────────────────────────────────────── */}
+        <motion.div
+          className="hidden md:block absolute inset-y-0 w-1/2 overflow-hidden z-30"
+          initial={false}
+          animate={{ x: isLogin ? '100%' : '0%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 120 }}
         >
           {/* Inner image also cross-fades between the two photos */}
           <div className="relative w-full h-full">
@@ -164,11 +201,11 @@ export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
               <Link href="/" className="flex flex-col leading-none select-none mb-auto mt-8">
                 <span
                   style={{ fontFamily: "'Playfair Display', serif" }}
-                  className="text-2xl font-semibold tracking-[4px] uppercase text-white"
+                  className="text-3xl font-semibold tracking-[4px] uppercase text-white"
                 >
                   VOGUEIR
                 </span>
-                <span className="text-[0.45rem] tracking-[5px] uppercase text-white/70 mt-[-2px]">
+                <span className="text-[0.55rem] tracking-[5px] uppercase text-white/70 mt-[-2px]">
                   FASHION
                 </span>
               </Link>
@@ -187,9 +224,9 @@ export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </main>
   )
 }
 
@@ -205,17 +242,17 @@ function FormLogin({
   onSwitch: () => void
 }) {
   return (
-    <div className="w-full max-w-sm">
-      <p className="text-[0.7rem] font-medium uppercase tracking-[2px] mb-3 text-[#555]">
+    <div className="flex flex-col">
+      <p className="text-[0.65rem] md:text-[0.7rem] font-medium uppercase tracking-[2px] mb-2 text-[#555]">
         Selamat Datang Kembali
       </p>
       <h1
         style={{ fontFamily: "'Playfair Display', serif" }}
-        className="text-3xl font-normal mb-1"
+        className="text-2xl sm:text-4xl font-normal mb-1"
       >
         Masuk
       </h1>
-      <p className="text-sm text-[#555] mb-7">
+      <p className="text-[13px] md:text-sm text-[#555] mb-6">
         Akses akun Anda untuk melihat pesanan dan item tersimpan.
       </p>
 
@@ -228,7 +265,7 @@ function FormLogin({
         <SubmitBtn loading={loading} label="Masuk" loadingLabel="Sedang masuk..." />
       </form>
 
-      <p className="text-center text-sm text-[#555] mt-6">
+      <p className="text-center text-xs md:text-sm text-[#555] mt-6">
         Belum punya akun?{' '}
         <button
           type="button"
@@ -255,21 +292,21 @@ function FormSignUp({
   onSwitch: () => void
 }) {
   return (
-    <div className="w-full max-w-sm">
-      <p className="text-[0.7rem] font-medium uppercase tracking-[2px] mb-3 text-[#555]">
+    <div className="flex flex-col">
+      <p className="text-[0.65rem] md:text-[0.7rem] font-medium uppercase tracking-[2px] mb-2 text-[#555]">
         Bergabung Bersama Kami
       </p>
       <h1
         style={{ fontFamily: "'Playfair Display', serif" }}
-        className="text-3xl font-normal mb-1"
+        className="text-2xl sm:text-4xl font-normal mb-1"
       >
         Buat Akun
       </h1>
-      <p className="text-sm text-[#555] mb-7">
+      <p className="text-[13px] md:text-sm text-[#555] mb-4">
         Daftar untuk akses penawaran eksklusif dan lacak pesanan Anda.
       </p>
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-3">
         <Field label="Nama Lengkap" type="text" value={name} onChange={setName} placeholder="Nama Anda" />
         <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="anda@email.com" />
         <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="Min. 8 karakter" />
@@ -279,7 +316,7 @@ function FormSignUp({
         <SubmitBtn loading={loading} label="Daftar Sekarang" loadingLabel="Membuat akun..." />
       </form>
 
-      <p className="text-center text-sm text-[#555] mt-6">
+      <p className="text-center text-xs md:text-sm text-[#555] mt-6">
         Sudah punya akun?{' '}
         <button
           type="button"
@@ -311,10 +348,10 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         required
         placeholder={placeholder}
-        className="w-full px-4 py-3 text-sm bg-white focus:outline-none transition"
+        className="w-full h-14 px-4 text-[15px] bg-[#f9f9f9] focus:bg-white focus:outline-none transition-all duration-200 rounded-xl"
         style={{ border: '1px solid #D8D8D8' }}
-        onFocus={(e) => (e.currentTarget.style.borderColor = '#1a1a1a')}
-        onBlur={(e) => (e.currentTarget.style.borderColor = '#D8D8D8')}
+        onFocus={(e) => { e.currentTarget.style.borderColor = '#1a1a1a' }}
+        onBlur={(e) => { e.currentTarget.style.borderColor = '#D8D8D8' }}
       />
     </div>
   )
@@ -336,9 +373,26 @@ function SubmitBtn({ loading, label, loadingLabel }: { loading: boolean; label: 
     <button
       type="submit"
       disabled={loading}
-      className="w-full bg-[#1a1a1a] text-white text-[12px] font-medium uppercase tracking-widest py-4 hover:opacity-80 transition disabled:opacity-40 mt-1"
+      className="relative w-full h-14 bg-[#1a1a1a] text-white text-[13px] font-semibold uppercase tracking-widest hover:opacity-90 active:scale-[0.96] transition-all disabled:opacity-50 mt-4 flex items-center justify-center overflow-hidden rounded-xl shadow-lg shadow-black/5"
     >
-      {loading ? loadingLabel : label}
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <motion.div 
+            key="loading"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="flex items-center gap-2"
+          >
+            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {loadingLabel}
+          </motion.div>
+        ) : (
+          <motion.span key="label" initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>{label}</motion.span>
+        )}
+      </AnimatePresence>
     </button>
   )
 }

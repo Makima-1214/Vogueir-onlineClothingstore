@@ -1,55 +1,23 @@
 'use client'
 
 import { Navbar } from '@/components/navbar'
-import { useState } from 'react'
+import { PageFooter } from '@/components/page-footer'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Trash2, ArrowRight } from 'lucide-react'
-
-interface CartItem {
-  id: string
-  name: string
-  price: number
-  quantity: number
-  size: string
-  color: string
-  img: string
-}
-
-function PageFooter() {
-  return (
-    <footer style={{ borderTop: '1px solid #E8E8E8', backgroundColor: '#faf9f8' }}>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-6 md:px-8 py-10">
-        {[
-          { title: 'Company', links: ['About Vogueir', 'Careers', 'Press'] },
-          { title: 'Help', links: ['FAQ', 'Returns', 'Track Order'] },
-          { title: 'Shop', links: ['New Arrivals', 'Women', 'Men', 'Sale'] },
-          { title: 'Follow', links: ['Instagram', 'TikTok', 'Pinterest'] },
-        ].map((col) => (
-          <div key={col.title}>
-            <h3 className="text-[11px] font-semibold uppercase tracking-widest mb-3">{col.title}</h3>
-            <ul className="space-y-1.5">
-              {col.links.map((l) => <li key={l}><a href="#" className="text-[12px] text-[#707072] hover:text-[#1a1a1a] transition block">{l}</a></li>)}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-between items-center px-6 md:px-8 py-5" style={{ borderTop: '1px solid #E8E8E8' }}>
-        <span style={{ fontFamily: "'Playfair Display', serif" }} className="text-base font-semibold tracking-[3px] uppercase">VOGUEIR</span>
-        <span className="text-[11px] text-[#9E9EA0] tracking-wider">© 2024 Vogueir Fashion</span>
-      </div>
-    </footer>
-  )
-}
+import { useCart, type CartItem } from '../../hooks/use-cart'
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const cart = useCart()
+  const [mounted, setMounted] = useState(false)
 
-  const updateQuantity = (id: string, qty: number) => {
-    if (qty <= 0) setCartItems(cartItems.filter(i => i.id !== id))
-    else setCartItems(cartItems.map(i => i.id === id ? { ...i, quantity: qty } : i))
-  }
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  const subtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0)
+  if (!mounted) return null
+
+  const subtotal = cart.items.reduce((s: number, i: CartItem) => s + i.price * i.quantity, 0)
   const shipping = subtotal > 500000 ? 0 : 25000
   const total = subtotal + shipping
 
@@ -67,7 +35,7 @@ export default function CartPage() {
 
       {/* Main */}
       <section className="flex-1 px-6 md:px-8 py-10">
-        {cartItems.length === 0 ? (
+        {cart.items.length === 0 ? (
           <div className="text-center py-24">
             <h2 style={{ fontFamily: "'Playfair Display', serif" }} className="text-3xl font-normal mb-4">
               Keranjang masih kosong
@@ -82,7 +50,7 @@ export default function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 max-w-5xl">
             {/* Items */}
             <div className="lg:col-span-2 space-y-4">
-              {cartItems.map((item) => (
+              {cart.items.map((item: CartItem) => (
                 <div key={item.id} className="flex gap-4 p-4" style={{ border: '1px solid #eaeaea' }}>
                   <div className="w-24 h-32 bg-[#f0f0f0] flex-shrink-0 overflow-hidden">
                     {item.img && <img src={item.img} alt={item.name} className="w-full h-full object-cover" />}
@@ -93,11 +61,11 @@ export default function CartPage() {
                     <p className="text-[13px] font-medium mb-4">Rp {item.price.toLocaleString('id-ID')}</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center" style={{ border: '1px solid #D8D8D8' }}>
-                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-3 py-1.5 text-sm hover:bg-[#f3efe9] transition">−</button>
+                        <button onClick={() => cart.updateQuantity(item.id, item.quantity - 1)} className="px-3 py-1.5 text-sm hover:bg-[#f3efe9] transition">−</button>
                         <span className="px-4 py-1.5 text-sm min-w-[2.5rem] text-center">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-3 py-1.5 text-sm hover:bg-[#f3efe9] transition">+</button>
+                        <button onClick={() => cart.updateQuantity(item.id, item.quantity + 1)} className="px-3 py-1.5 text-sm hover:bg-[#f3efe9] transition">+</button>
                       </div>
-                      <button onClick={() => setCartItems(cartItems.filter(i => i.id !== item.id))} className="p-2 text-[#707072] hover:text-[#D30005] transition">
+                      <button onClick={() => cart.removeItem(item.id)} className="p-2 text-[#707072] hover:text-[#D30005] transition">
                         <Trash2 size={16} />
                       </button>
                     </div>

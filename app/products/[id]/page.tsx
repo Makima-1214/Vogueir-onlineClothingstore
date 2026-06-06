@@ -6,6 +6,8 @@ import { useState, use, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Star, Heart, Share2, ArrowLeft, Check, ShoppingBag, Zap } from 'lucide-react'
+import { PRODUCTS, ALL_PRODUCTS_LIST, type Product } from '@/lib/products'
+import { useCart } from '../../../hooks/use-cart'
 
 // ─── DATA ──────────────────────────────────────────────────────────────────────
 
@@ -14,115 +16,6 @@ const COLOR_MAP: Record<string, string> = {
   Charcoal: '#4A4A4A', Olive: '#5C6B3A', Cream: '#F5F0E8', Mauve: '#8B6F6F',
   Brown: '#8B6F4E', Ecru: '#E8E4DC', Slate: '#4A5568', Terracotta: '#C4714A',
 }
-
-type Product = {
-  id: string; name: string; category: string; price: number
-  originalPrice?: number; description: string; details: string[]
-  sizes: string[]; variants: { color: string; imgs: string[] }[]
-  rating: number; reviews: number; inStock: boolean
-}
-
-const PRODUCTS: Record<string, Product> = {
-  '1': {
-    id: '1', name: 'Structured Oversized Jacket', category: "Women's · Outerwear",
-    price: 890000, description: 'Jaket oversized struktural yang elegan. Dibuat dari bahan premium dengan detail yang sangat teliti — sempurna untuk tampilan kasual maupun formal.',
-    details: ['Material: 80% Polyester, 20% Nylon', 'Fit: Oversized', 'Care: Dry clean only', 'SKU: VOG-OW-001'],
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    variants: [
-      { color: 'Black', imgs: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Tan',   imgs: ['https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Sand',  imgs: ['https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.8, reviews: 124, inStock: true,
-  },
-  '2': {
-    id: '2', name: 'Wide Leg Cargo Pant', category: "Women's · Bottoms",
-    price: 650000, description: 'Celana cargo wide leg dengan siluet modern. Kenyamanan maksimal dengan sentuhan editorial yang cocok untuk berbagai kesempatan.',
-    details: ['Material: 100% Cotton Twill', 'Fit: Wide Leg', 'Care: Machine wash cold', 'SKU: VOG-BT-002'],
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    variants: [
-      { color: 'Sand',     imgs: ['https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1594938298603-c8148c4b4357?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Charcoal', imgs: ['https://images.unsplash.com/photo-1542272604-787c3835535d?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1475178626620-a4d074967452?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Olive',    imgs: ['https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.6, reviews: 89, inStock: true,
-  },
-  '3': {
-    id: '3', name: 'Essential Pullover Hoodie', category: "Men's · Tops",
-    price: 420000, originalPrice: 600000,
-    description: 'Hoodie pullover essential dengan bahan fleece premium. Nyaman sepanjang hari untuk aktivitas sehari-hari.',
-    details: ['Material: 70% Cotton, 30% Polyester', 'Fit: Regular', 'Care: Machine wash warm', 'SKU: VOG-TP-003'],
-    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-    variants: [
-      { color: 'Black', imgs: ['https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Cream', imgs: ['https://images.unsplash.com/photo-1620799139834-6b8f844fbe61?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Mauve', imgs: ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.7, reviews: 203, inStock: true,
-  },
-  '4': {
-    id: '4', name: 'Canvas Studio Tote', category: 'Accessories · Bags',
-    price: 480000, description: 'Tote bag kanvas studio yang luas dan kuat. Ideal untuk aktivitas sehari-hari dengan gaya yang tetap terjaga.',
-    details: ['Material: Heavy Canvas', 'Capacity: ~20L', 'Care: Spot clean', 'SKU: VOG-AC-004'],
-    sizes: ['One Size'],
-    variants: [
-      { color: 'Sand',  imgs: ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1544816565-aa8c1166648f?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Black', imgs: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Brown', imgs: ['https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.9, reviews: 67, inStock: true,
-  },
-  '5': {
-    id: '5', name: 'Relaxed Linen Shirt', category: "Men's · Tops",
-    price: 540000, description: 'Kemeja linen relaksed dengan cut yang breathable. Sempurna untuk musim panas dan tampilan kasual yang bersih.',
-    details: ['Material: 100% Linen', 'Fit: Relaxed', 'Care: Machine wash cold', 'SKU: VOG-TP-005'],
-    sizes: ['S', 'M', 'L', 'XL'],
-    variants: [
-      { color: 'Ecru',      imgs: ['https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Slate',     imgs: ['https://images.unsplash.com/photo-1607345366928-199ea26cfe3e?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Terracotta',imgs: ['https://images.unsplash.com/photo-1604644401890-0bd678c83788?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.5, reviews: 91, inStock: true,
-  },
-  '6': {
-    id: '6', name: 'Urban Runner Mono', category: 'Accessories · Footwear',
-    price: 1200000, description: 'Sneaker urban monokrom dengan desain minimalis dan sol yang nyaman untuk pemakaian seharian.',
-    details: ['Material: Mesh + Rubber Sole', 'Fit: True to size', 'Care: Wipe clean', 'SKU: VOG-FW-006'],
-    sizes: ['39', '40', '41', '42', '43', '44'],
-    variants: [
-      { color: 'Black', imgs: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'White', imgs: ['https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.8, reviews: 156, inStock: true,
-  },
-  '7': {
-    id: '7', name: 'Ribbed Knit Sweater', category: "Women's · Tops",
-    price: 384000, originalPrice: 480000,
-    description: 'Sweater rajut ribbed dengan tekstur hangat dan gaya. Tersedia dalam berbagai warna netral yang mudah dipadukan.',
-    details: ['Material: 80% Acrylic, 20% Wool', 'Fit: Slim', 'Care: Hand wash cold', 'SKU: VOG-TP-007'],
-    sizes: ['XS', 'S', 'M', 'L'],
-    variants: [
-      { color: 'Mauve', imgs: ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1583744946564-b52ac1c389c8?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Sand',  imgs: ['https://images.unsplash.com/photo-1620799139834-6b8f844fbe61?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Slate', imgs: ['https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.6, reviews: 78, inStock: true,
-  },
-  '8': {
-    id: '8', name: 'Logo 5-Panel Cap', category: 'Accessories · Headwear',
-    price: 280000, description: 'Topi 5-panel dengan bordir logo Vogueir yang subtle. Finishing premium dan tahan lama untuk berbagai aktivitas.',
-    details: ['Material: Cotton Twill', 'Fit: Adjustable strap', 'Care: Spot clean', 'SKU: VOG-AC-008'],
-    sizes: ['One Size'],
-    variants: [
-      { color: 'Black', imgs: ['https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=800&h=1000&auto=format&fit=crop', 'https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'White', imgs: ['https://images.unsplash.com/photo-1575428652377-a2d80e2277fc?w=800&h=1000&auto=format&fit=crop'] },
-      { color: 'Slate', imgs: ['https://images.unsplash.com/photo-1521369909029-2afed882baee?w=800&h=1000&auto=format&fit=crop'] },
-    ],
-    rating: 4.7, reviews: 44, inStock: true,
-  },
-}
-
-const ALL_PRODUCTS_LIST = Object.values(PRODUCTS)
 
 // ─── TOAST ─────────────────────────────────────────────────────────────────────
 function Toast({ visible }: { visible: boolean }) {
@@ -215,6 +108,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [wishlist, setWishlist]                 = useState(false)
   const [detailOpen, setDetailOpen]             = useState(false)
 
+  const cart = useCart()
   const activeVariant = product?.variants[activeVariantIdx]
   const imgs          = activeVariant?.imgs ?? []
 
@@ -278,6 +172,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   }
 
   function addToCart() {
+    cart.addItem({
+      // Buat ID unik berdasarkan produk, ukuran, dan warna
+      id: `${product.id}-${selectedSize}-${activeVariant.color}`,
+      name: product.name,
+      price: product.price,
+      quantity: quantity,
+      size: selectedSize,
+      color: activeVariant.color,
+      img: activeVariant.imgs[0]
+    })
     setToast(true)
     setTimeout(() => setToast(false), 2800)
   }
@@ -293,14 +197,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       {/* ── BREADCRUMB ──────────────────────────────────────────────── */}
       <div
-        className="px-6 md:px-10 py-3 flex items-center gap-2 text-[11px] text-[#707072]"
+        className="px-4 md:px-10 py-3 flex items-center gap-2 text-[11px] text-[#707072] bg-[#faf9f8] sticky top-[60px] md:top-auto z-30"
         style={{ borderBottom: '1px solid #eaeaea' }}
       >
         <button
           onClick={() => router.back()}
           className="flex items-center gap-1.5 hover:text-[#1a1a1a] transition"
         >
-          <ArrowLeft size={13} /> Kembali
+          <ArrowLeft size={13} /> <span className="hidden sm:inline">Kembali</span>
         </button>
         <span className="mx-1">·</span>
         <Link href="/products" className="hover:text-[#1a1a1a] transition">Shop</Link>
@@ -611,7 +515,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       {/* ── MOBILE STICKY BAR ───────────────────────────────────────── */}
       <div
         className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex gap-2 px-4 py-3"
-        style={{ backgroundColor: '#faf9f8', borderTop: '1px solid #eaeaea' }}
+        style={{ backgroundColor: '#faf9f8', borderTop: '1px solid #eaeaea', paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
       >
         <button
           onClick={() => setWishlist(!wishlist)}

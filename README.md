@@ -10,6 +10,7 @@ Proyek ini dibangun menggunakan teknologi mutakhir dalam ekosistem pengembangan 
 *   **Bahasa:** [TypeScript](https://www.typescriptlang.org/)
 *   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 *   **Animasi:** [GSAP (GreenSock Animation Platform)](https://greensock.com/gsap/) & ScrollTrigger untuk interaksi scroll yang dinamis.
+*   **Animasi UI:** [Framer Motion](https://www.framer.com/motion/) untuk transisi komponen dan gesture.
 *   **Autentikasi:** [Better Auth](https://www.better-auth.com/) untuk manajemen login dan registrasi pengguna.
 *   **Font:** Google Fonts (Playfair Display untuk heading dan Inter untuk body).
 

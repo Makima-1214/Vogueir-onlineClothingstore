@@ -4,6 +4,7 @@ import { Navbar } from '@/components/navbar'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useGsapAnimations } from '@/hooks/useGsapAnimations'
+import { PageFooter } from '@/components/page-footer'
 
 // ─── INLINE ICONS ─────────────────────────────────────────────────────────────
 function ArrowRight({ size = 14 }: { size?: number }) {
@@ -214,19 +215,19 @@ export default function Home() {
       </div>
 
       {/* ① HERO ──────────────────────────────────────────────────────── */}
-      <section className="flex min-h-[80vh]">
-        <div className="flex-1 flex flex-col justify-center px-10 md:px-20 py-16">
+      <section className="flex min-h-[70vh] md:min-h-[80vh]">
+        <div className="flex-1 flex flex-col justify-center px-6 md:px-20 py-12 md:py-16">
           <p data-anim="hero-badge" className="text-[0.8rem] font-semibold uppercase tracking-[2px] mb-5">
             NEW COLLECTION
           </p>
           <h1
             data-anim="hero-title"
             style={{ fontFamily: "'Playfair Display', serif" }}
-            className="text-5xl md:text-[5.5rem] leading-[1.1] font-normal mb-5"
+            className="text-4xl sm:text-5xl md:text-[5.5rem] leading-[1.1] font-normal mb-5"
           >
             Elevate Your<br />Everyday Style
           </h1>
-          <p data-anim="hero-desc" className="text-[#555] max-w-xs mb-10 leading-relaxed text-sm">
+          <p data-anim="hero-desc" className="text-[#555] max-w-xs mb-8 md:mb-10 leading-relaxed text-[13px] md:text-sm">
             Temukan koleksi fashion terbaru yang elegan, nyaman dan penuh karakter.
           </p>
           <div data-anim="hero-cta">
@@ -249,16 +250,16 @@ export default function Home() {
 
       {/* ② SHOP BY CATEGORY ──────────────────────────────────────────── */}
       <div className="px-6 md:px-8 pt-14 pb-2">
-        <div className="flex items-baseline justify-between pb-6">
+        <div className="flex items-baseline justify-between pb-5 md:pb-6">
           <h2
             data-anim="section-heading"
-            className="text-[28px] md:text-[32px] font-normal uppercase tracking-wider"
+            className="text-2xl md:text-[32px] font-normal uppercase tracking-wider"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             Shop by Category
           </h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {CATEGORIES.map((cat) => (
             <div
               key={cat.label}
@@ -270,7 +271,7 @@ export default function Home() {
                 src={cat.img}
                 alt={cat.label}
                 className="w-full object-cover mb-3"
-                style={{ height: '220px' }}
+                style={{ height: '200px' }}
               />
               <h3 className="text-[0.85rem] font-semibold mb-1.5">{cat.label}</h3>
               <Link
@@ -443,11 +444,11 @@ export default function Home() {
       {/* ⑤ FREE SHIPPING CTA STRIP ───────────────────────────────────── */}
       <div
         data-anim="cta-strip"
-        className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-8 py-8 bg-[#1a1a1a]"
+        className="flex flex-col md:flex-row items-center md:items-center text-center md:text-left justify-between gap-6 px-8 py-10 md:py-8 bg-[#1a1a1a]"
       >
         <div data-anim="cta-text">
           <p
-            className="text-[22px] md:text-[28px] text-white uppercase tracking-wider"
+            className="text-xl md:text-[28px] text-white uppercase tracking-wider"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             FREE SHIPPING OVER RP 500.000
@@ -582,45 +583,7 @@ export default function Home() {
       </div>
 
       {/* ⑩ FOOTER ────────────────────────────────────────────────────── */}
-      <footer style={{ borderTop: '1px solid #E8E8E8', backgroundColor: '#faf9f8' }}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-6 md:px-8 py-10">
-          {[
-            { title: 'Company', links: ['About Vogueir', 'Careers', 'Press', 'Sustainability'] },
-            { title: 'Help', links: ['FAQ', 'Returns', 'Size Guide', 'Track Order'] },
-            { title: 'Shop', links: ['New Arrivals', 'Women', 'Men', 'Sale'] },
-            { title: 'Follow', links: ['Instagram', 'TikTok', 'Pinterest'] },
-          ].map((col) => (
-            <div key={col.title}>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest mb-3">{col.title}</h3>
-              <ul className="space-y-1.5">
-                {col.links.map((l) => (
-                  <li key={l}>
-                    <a href="#" className="text-[12px] text-[#707072] hover:text-[#1a1a1a] transition block">
-                      {l}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div
-          className="flex flex-col md:flex-row justify-between items-center gap-2 px-6 md:px-8 py-5"
-          style={{ borderTop: '1px solid #E8E8E8' }}
-        >
-          <div className="flex flex-col items-start md:items-center md:flex-row gap-1">
-            <span
-              style={{ fontFamily: "'Playfair Display', serif" }}
-              className="text-base font-semibold tracking-[3px] uppercase"
-            >
-              VOGUEIR
-            </span>
-            <span className="hidden md:inline text-[#9E9EA0] mx-2">·</span>
-            <span className="text-[11px] text-[#9E9EA0] tracking-wider">© 2024 Vogueir Fashion. All rights reserved.</span>
-          </div>
-          <span className="text-[11px] text-[#9E9EA0] tracking-wider">Privacy · Terms · Cookies</span>
-        </div>
-      </footer>
+      <PageFooter />
     </div>
   )
 }
