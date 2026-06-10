@@ -1,6 +1,8 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
 import './globals.css'
+import { CartSidebar } from '@/components/cart-sidebar'
+import { MobileBottomNav } from '@/components/mobile-bottom-nav'
 
 export const metadata: Metadata = {
   title: 'Vogueir Fashion',
@@ -33,7 +35,9 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className="antialiased">
+        <CartSidebar />
         {children}
+        <MobileBottomNav />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

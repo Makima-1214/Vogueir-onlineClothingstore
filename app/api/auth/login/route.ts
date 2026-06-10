@@ -11,8 +11,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Email dan password wajib diisi.' }, { status: 400 })
   }
 
-  const user = await prisma.user.findUnique({ where: { email } })
-  if (!user || !user.password || !verifyPassword(password, user.password)) {
+  let user
+  try {
+    user = await prisma.user.findUnique({ where: { email } })
+  } catch (err) {
+    console.error('[login] DB error:', err)
+    return NextResponse.json({ error: 'Terjadi kesalahan server, coba lagi.' }, { status: 500 })
+  }
+
+  if (!user) {
+    console.warn('[login] User not found:', email)
+    return NextResponse.json({ error: 'Email atau password salah.' }, { status: 401 })
+  }
+
+  if (!user.password) {
+    console.warn('[login] User has no password (OAuth account?):', email)
+    return NextResponse.json({ error: 'Akun ini tidak menggunakan password. Coba masuk dengan Google atau metode lain.' }, { status: 401 })
+  }
+
+  const passwordValid = verifyPassword(password, user.password)
+  if (!passwordValid) {
+    console.warn('[login] Wrong password for:', email, '| hash prefix:', user.password.substring(0, 20))
     return NextResponse.json({ error: 'Email atau password salah.' }, { status: 401 })
   }
 

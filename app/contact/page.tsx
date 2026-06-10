@@ -117,12 +117,12 @@ export default function ContactPage() {
       <Navbar />
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="px-6 md:px-16 py-14 md:py-20" style={{ borderBottom: '1px solid #eaeaea' }}>
+      <section className="px-4 md:px-16 py-12 md:py-20" style={{ borderBottom: '1px solid #eaeaea' }}>
         <div data-anim="contact-hero">
           <p className="text-[0.75rem] font-medium uppercase tracking-[2px] mb-4 text-[#555]">Kami Siap Membantu</p>
           <h1
             style={{ fontFamily: "'Playfair Display', serif" }}
-            className="text-4xl md:text-[3.5rem] font-normal leading-[1.1] mb-4"
+            className="text-[2.2rem] md:text-[3.5rem] font-normal leading-[1.1] mb-4"
           >
             Hubungi Kami
           </h1>
@@ -133,19 +133,19 @@ export default function ContactPage() {
       </section>
 
       {/* ── CONTACT INFO CARDS ───────────────────────────────────── */}
-      <section className="px-6 md:px-16 py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="px-4 md:px-16 py-10 md:py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {CONTACT_INFO.map((item) => (
             <div
               key={item.title}
               data-anim="info-card"
-              className="p-6 flex flex-col gap-4"
+              className="p-5 md:p-6 flex flex-col gap-3 md:gap-4"
               style={{ backgroundColor: '#f3efe9' }}
             >
               <div style={{ color: '#1a1a1a' }}>{item.icon}</div>
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-[#707072] mb-1">{item.title}</p>
-                <p className="text-[14px] font-medium mb-1">{item.value}</p>
+                <p className="text-[14px] font-medium mb-1 break-words">{item.value}</p>
                 <p className="text-[12px] text-[#555]">{item.desc}</p>
               </div>
             </div>
@@ -154,8 +154,8 @@ export default function ContactPage() {
       </section>
 
       {/* ── FORM + FAQ ───────────────────────────────────────────── */}
-      <section className="px-6 md:px-16 py-8 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <section className="px-4 md:px-16 py-8 pb-14 md:pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-10">
 
           {/* Contact Form */}
           <div data-anim="fade-up">

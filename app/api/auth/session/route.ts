@@ -3,7 +3,8 @@ import { cookies } from 'next/headers'
 import { getUserBySessionToken } from '@/lib/auth'
 
 export async function GET() {
-  const sessionToken = cookies().get('session-token')?.value
+  const cookieStore = await cookies()
+  const sessionToken = cookieStore.get('session-token')?.value
   if (!sessionToken) {
     return NextResponse.json({ user: null })
   }

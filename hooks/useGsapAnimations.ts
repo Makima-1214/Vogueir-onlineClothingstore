@@ -11,7 +11,7 @@ export function useGsapAnimations() {
     // Small delay to let Next.js hydrate fully
     const ctx = gsap.context(() => {
       // ── NAVBAR slide down ──────────────────────────────────────────
-      gsap.from('[data-anim="navbar"]', {
+      gsap.from('nav', {
         y: -60,
         opacity: 0,
         duration: 0.7,

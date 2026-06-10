@@ -1,0 +1,71 @@
+<svg width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#C9A96E"/>
+      <stop offset="50%" stop-color="#E8D5A3"/>
+      <stop offset="100%" stop-color="#B8863F"/>
+    </linearGradient>
+    <linearGradient id="goldGradMonogram" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8D5A3"/>
+      <stop offset="100%" stop-color="#B8863F"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Monogram Diamond Frame -->
+  <g transform="translate(5, 5)">
+    <!-- Outer diamond -->
+    <polygon
+      points="25,0 50,25 25,50 0,25"
+      fill="none"
+      stroke="url(#goldGrad)"
+      stroke-width="1"
+    />
+    <!-- Inner thin diamond -->
+    <polygon
+      points="25,5 45,25 25,45 5,25"
+      fill="none"
+      stroke="url(#goldGrad)"
+      stroke-width="0.4"
+      opacity="0.6"
+    />
+    <!-- Letter V -->
+    <text
+      x="25"
+      y="33"
+      text-anchor="middle"
+      font-family="Georgia, 'Times New Roman', serif"
+      font-size="22"
+      font-weight="400"
+      letter-spacing="0"
+      fill="url(#goldGradMonogram)"
+    >V</text>
+  </g>
+
+  <!-- Thin vertical divider -->
+  <line x1="70" y1="12" x2="70" y2="48" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.7"/>
+
+  <!-- Wordmark VOGUEIR -->
+  <text
+    x="82"
+    y="32"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="20"
+    font-weight="400"
+    letter-spacing="7"
+    fill="#1a1a1a"
+  >VOGUEIR</text>
+
+  <!-- Thin underline accent -->
+  <line x1="82" y1="38" x2="208" y2="38" stroke="url(#goldGrad)" stroke-width="0.7" opacity="0.9"/>
+
+  <!-- Tagline -->
+  <text
+    x="82"
+    y="50"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="6.5"
+    font-weight="400"
+    letter-spacing="3.5"
+    fill="#9E9EA0"
+  >FASHION HOUSE</text>
+</svg>

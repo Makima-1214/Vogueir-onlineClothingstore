@@ -1,45 +1,52 @@
 import { useEffect, useState } from 'react'
 
-type SessionData = {
-  user: {
-    id: string
-    name?: string | null
-    email: string
-    image?: string | null
-    createdAt?: string
-  }
-} | null
+export type SessionUser = {
+  id: string
+  name?: string | null
+  email: string
+  image?: string | null
+  createdAt?: string
+}
 
-export const useSession = (): { data: SessionData; isPending: boolean } => {
+type SessionData = { user: SessionUser } | null
+
+// ─── fetch helper ────────────────────────────────────────────────────────────
+async function fetchSession(): Promise<SessionData> {
+  try {
+    const res = await fetch('/api/auth/session', { cache: 'no-store' })
+    if (!res.ok) return null
+    const json = await res.json()
+    return json.user ? { user: json.user } : null
+  } catch {
+    return null
+  }
+}
+
+// ─── useSession ──────────────────────────────────────────────────────────────
+export const useSession = (): { data: SessionData; isPending: boolean; reload: () => void } => {
   const [data, setData] = useState<SessionData>(null)
   const [isPending, setIsPending] = useState(true)
 
+  const load = () => {
+    setIsPending(true)
+    fetchSession().then((session) => {
+      setData(session)
+      setIsPending(false)
+    })
+  }
+
   useEffect(() => {
-    let cancelled = false
-
-    fetch('/api/auth/session', { cache: 'no-store' })
-      .then(async (res) => {
-        const response = await res.json()
-        if (!cancelled) {
-          setData(response.user ?? null)
-          setIsPending(false)
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setData(null)
-          setIsPending(false)
-        }
-      })
-
-    return () => {
-      cancelled = true
-    }
+    load()
+    // Re-fetch setiap kali window mendapat fokus (misal: kembali dari tab lain)
+    window.addEventListener('focus', load)
+    return () => window.removeEventListener('focus', load)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return { data, isPending }
+  return { data, isPending, reload: load }
 }
 
+// ─── auth helpers ─────────────────────────────────────────────────────────────
 async function fetchAuth(path: string, body: Record<string, unknown>) {
   const response = await fetch(path, {
     method: 'POST',
@@ -78,4 +85,3 @@ export const authClient = {
   signUp: { email: signUp },
   signOut,
 }
-

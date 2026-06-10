@@ -3,7 +3,8 @@ import { cookies } from 'next/headers'
 import { prisma } from '@/lib/db'
 
 export async function POST() {
-  const sessionToken = cookies().get('session-token')?.value
+  const cookieStore = await cookies()
+  const sessionToken = cookieStore.get('session-token')?.value
   if (sessionToken) {
     await prisma.session.deleteMany({ where: { sessionToken } })
   }

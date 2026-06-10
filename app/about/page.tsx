@@ -124,32 +124,32 @@ export default function AboutPage() {
       <Navbar />
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="flex flex-col md:flex-row min-h-[70vh]">
+      <section className="flex flex-col md:flex-row min-h-[60vh] md:min-h-[70vh]">
         {/* Text */}
-        <div className="flex-1 flex flex-col justify-center px-8 md:px-16 py-16">
+        <div className="flex-1 flex flex-col justify-center px-6 md:px-16 py-12 md:py-16">
           <div data-anim="about-hero">
-            <p className="text-[0.75rem] font-medium uppercase tracking-[2px] mb-5 text-[#555]">
+            <p className="text-[0.75rem] font-medium uppercase tracking-[2px] mb-4 md:mb-5 text-[#555]">
               About Us
             </p>
             <h1
               style={{ fontFamily: "'Playfair Display', serif" }}
-              className="text-4xl md:text-[3.5rem] font-normal leading-[1.1] mb-6"
+              className="text-[2.2rem] md:text-[3.5rem] font-normal leading-[1.1] mb-5 md:mb-6"
             >
               Fashion for<br />Every Version<br />of You
             </h1>
-            <p className="text-sm text-[#555] max-w-sm leading-relaxed mb-8">
+            <p className="text-sm text-[#555] max-w-sm leading-relaxed mb-7 md:mb-8">
               Vogueir lahir dari keyakinan bahwa fashion bukan hanya soal penampilan — ini tentang bagaimana Anda mengekspresikan diri, dengan percaya diri, setiap hari.
             </p>
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 bg-[#1a1a1a] text-white text-[0.82rem] font-medium uppercase tracking-wider px-6 py-3 hover:opacity-80 transition"
+              className="inline-flex items-center gap-2 bg-[#1a1a1a] text-white text-[0.82rem] font-medium uppercase tracking-wider px-6 py-3.5 hover:opacity-80 transition"
             >
               Shop Now <ArrowRight />
             </Link>
           </div>
         </div>
         {/* Image */}
-        <div className="flex-1 min-h-[400px] md:min-h-0 overflow-hidden">
+        <div className="flex-1 min-h-[280px] md:min-h-0 overflow-hidden">
           <img
             data-anim="about-hero-img"
             src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&auto=format&fit=crop"
@@ -161,7 +161,7 @@ export default function AboutPage() {
 
       {/* ── STORY ────────────────────────────────────────────────── */}
       <section
-        className="px-6 md:px-16 py-16 md:py-20"
+        className="px-6 md:px-16 py-12 md:py-20"
         style={{ backgroundColor: '#f3efe9' }}
       >
         <div data-anim="fade-up" className="max-w-2xl">
@@ -187,8 +187,8 @@ export default function AboutPage() {
       </section>
 
       {/* ── STATS ────────────────────────────────────────────────── */}
-      <section data-anim="fade-up" className="px-6 md:px-16 py-14" style={{ borderBottom: '1px solid #eaeaea' }}>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section data-anim="fade-up" className="px-6 md:px-16 py-10 md:py-14" style={{ borderBottom: '1px solid #eaeaea' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {[
             { value: '2021', label: 'Tahun Berdiri' },
             { value: '50K+', label: 'Pelanggan Puas' },
@@ -198,7 +198,7 @@ export default function AboutPage() {
             <div key={stat.label}>
               <p
                 style={{ fontFamily: "'Playfair Display', serif" }}
-                className="text-[2.5rem] font-normal leading-none mb-2"
+                className="text-[2rem] md:text-[2.5rem] font-normal leading-none mb-2"
               >
                 {stat.value}
               </p>
@@ -209,7 +209,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── VALUES ───────────────────────────────────────────────── */}
-      <section className="px-6 md:px-16 py-16">
+      <section className="px-6 md:px-16 py-12 md:py-16">
         <div data-anim="fade-up" className="mb-10">
           <p className="text-[0.75rem] font-medium uppercase tracking-[2px] mb-4 text-[#555]">What We Stand For</p>
           <h2
@@ -238,8 +238,8 @@ export default function AboutPage() {
       </section>
 
       {/* ── TEAM ─────────────────────────────────────────────────── */}
-      <section className="px-6 md:px-16 py-16" style={{ backgroundColor: '#f3efe9' }}>
-        <div data-anim="fade-up" className="mb-10">
+      <section className="px-6 md:px-16 py-12 md:py-16" style={{ backgroundColor: '#f3efe9' }}>
+        <div data-anim="fade-up" className="mb-8 md:mb-10">
           <p className="text-[0.75rem] font-medium uppercase tracking-[2px] mb-4 text-[#555]">The People</p>
           <h2
             style={{ fontFamily: "'Playfair Display', serif" }}
@@ -248,7 +248,7 @@ export default function AboutPage() {
             Tim Kami
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-5">
           {TEAM.map((member) => (
             <div key={member.name} data-anim="team-card">
               <div className="overflow-hidden mb-4" style={{ aspectRatio: '1/1' }}>
@@ -268,7 +268,7 @@ export default function AboutPage() {
       {/* ── CTA ──────────────────────────────────────────────────── */}
       <section
         data-anim="fade-up"
-        className="px-6 md:px-16 py-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-[#1a1a1a]"
+        className="px-6 md:px-16 py-12 md:py-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 md:gap-6 bg-[#1a1a1a]"
       >
         <div>
           <h2

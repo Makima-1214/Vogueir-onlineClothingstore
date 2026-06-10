@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { authClient } from '@/lib/auth-client'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 
@@ -18,7 +18,6 @@ const SIGNUP_IMG =
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
-  const router = useRouter()
   const [mode, setMode] = useState<Mode>(initialMode)
   const [animating, setAnimating] = useState(false)
 
@@ -68,14 +67,12 @@ export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
 
     try {
       if (mode === 'login') {
-        const { error } = await authClient.signIn.email({ email, password }) as any
-        if (error) throw new Error(error.message)
+        await authClient.signIn.email({ email, password })
       } else {
-        const { error } = await authClient.signUp.email({ email, password, name }) as any
-        if (error) throw new Error(error.message)
+        await authClient.signUp.email({ email, password, name })
       }
-      router.push('/')
-      router.refresh()
+      // Full reload agar session cookie terbaca oleh useSession yang baru mount
+      window.location.href = '/'
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Email atau password salah.')
     } finally {
@@ -105,9 +102,13 @@ export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
               <ArrowLeft size={22} strokeWidth={1.5} className="md:w-4 md:h-4" />
             </Link>
             <div className="md:hidden">
-              <span className="text-lg font-bold tracking-[4px] uppercase" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Vogueir
-              </span>
+              <Image
+                src="/logo.svg"
+                alt="Vogueir"
+                width={130}
+                height={36}
+                className="h-8 w-auto"
+              />
             </div>
             <div className="w-10 md:hidden" /> {/* Spacer centering */}
           </div>
@@ -197,18 +198,17 @@ export function AuthPanel({ initialMode = 'login' }: { initialMode?: Mode }) {
             />
             {/* Overlay gradient + branding */}
             <div className="absolute inset-0 bg-black/30" />
+            {/* Logo pojok kiri atas */}
+            <Link href="/" className="absolute top-8 left-10 select-none z-10">
+              <Image
+                src="/logo.svg"
+                alt="Vogueir"
+                width={160}
+                height={44}
+                className="h-10 w-auto brightness-0 invert"
+              />
+            </Link>
             <div className="absolute inset-0 flex flex-col justify-end p-10">
-              <Link href="/" className="flex flex-col leading-none select-none mb-auto mt-8">
-                <span
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                  className="text-3xl font-semibold tracking-[4px] uppercase text-white"
-                >
-                  VOGUEIR
-                </span>
-                <span className="text-[0.55rem] tracking-[5px] uppercase text-white/70 mt-[-2px]">
-                  FASHION
-                </span>
-              </Link>
               <div>
                 <p
                   style={{ fontFamily: "'Playfair Display', serif" }}

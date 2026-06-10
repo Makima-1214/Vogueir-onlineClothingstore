@@ -106,7 +106,7 @@ export default function CollectionPage() {
 
       {/* Hero */}
       <section
-        className="px-6 md:px-8 py-14 md:py-20"
+        className="px-4 md:px-8 py-12 md:py-20"
         style={{ borderBottom: '1px solid #eaeaea' }}
       >
         <div data-anim="col-hero">
@@ -115,7 +115,7 @@ export default function CollectionPage() {
           </p>
           <h1
             style={{ fontFamily: "'Playfair Display', serif" }}
-            className="text-4xl md:text-[3.5rem] font-normal leading-[1.1] mb-4"
+            className="text-[2.2rem] md:text-[3.5rem] font-normal leading-[1.1] mb-4"
           >
             Our Collections
           </h1>
@@ -126,7 +126,7 @@ export default function CollectionPage() {
       </section>
 
       {/* Collections Grid */}
-      <section className="flex-1 px-6 md:px-8 py-12">
+      <section className="flex-1 px-4 md:px-8 py-10 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {COLLECTIONS.map((col, i) => {
             const isWide = i === 0 // first card spans full width on desktop
@@ -134,10 +134,10 @@ export default function CollectionPage() {
               <div
                 key={col.name}
                 data-anim="col-card"
-                className={`relative flex items-end p-7 overflow-hidden group${isWide ? ' md:col-span-2' : ''}`}
+                className={`relative flex items-end p-5 md:p-7 overflow-hidden group${isWide ? ' md:col-span-2' : ''}`}
                 style={{
                   background: col.bg,
-                  minHeight: isWide ? '420px' : '320px',
+                  minHeight: isWide ? 'clamp(260px, 50vw, 420px)' : 'clamp(200px, 40vw, 320px)',
                 }}
               >
                 <img
@@ -154,7 +154,7 @@ export default function CollectionPage() {
                     {col.season}
                   </p>
                   <h2
-                    className={`font-normal uppercase leading-[0.9] mb-3 ${isWide ? 'text-[52px]' : 'text-[32px]'}`}
+                    className={`font-normal uppercase leading-[0.9] mb-3 ${isWide ? 'text-[36px] md:text-[52px]' : 'text-[26px] md:text-[32px]'}`}
                     style={{
                       fontFamily: "'Playfair Display', serif",
                       color: col.dark ? '#fff' : '#111',
@@ -163,7 +163,7 @@ export default function CollectionPage() {
                     {col.name}
                   </h2>
                   <p
-                    className="text-[13px] mb-5 leading-relaxed max-w-xs"
+                    className="text-[13px] mb-4 md:mb-5 leading-relaxed max-w-xs"
                     style={{ color: col.dark ? 'rgba(255,255,255,0.65)' : 'rgba(26,26,26,0.65)' }}
                   >
                     {col.desc}

@@ -4,7 +4,9 @@ import { Navbar } from '@/components/navbar'
 import { PageFooter } from '@/components/page-footer'
 import { useState, use, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { Star, Heart, Share2, ArrowLeft, Check, ShoppingBag, Zap } from 'lucide-react'
 import { PRODUCTS, ALL_PRODUCTS_LIST, type Product } from '@/lib/products'
 import { useCart } from '../../../hooks/use-cart'
@@ -65,10 +67,12 @@ function ProductCard({ p }: { p: Product }) {
   return (
     <Link href={`/products/${p.id}`} className="group block">
       <div className="relative bg-[#f0f0f0] aspect-[3/4] overflow-hidden mb-3">
-        <img
+        <Image
           src={p.variants[0].imgs[0]}
           alt={p.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 768px) 50vw, 25vw"
         />
         {p.originalPrice && (
           <span className="absolute top-2 left-2 bg-[#D30005] text-white text-[10px] font-medium uppercase tracking-wider px-2 py-0.5">
@@ -232,7 +236,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                       opacity: activeImgIdx === i ? 1 : 0.55,
                     }}
                   >
-                    <img src={src} alt="" className="w-full h-full object-cover" />
+                    <Image src={src} alt="" fill className="object-cover" sizes="64px" />
                   </button>
                 ))}
               </div>
@@ -242,11 +246,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
             {/* Desktop main image */}
             <div className="relative flex-1 bg-[#f0f0f0] overflow-hidden hidden md:block" style={{ aspectRatio: '3/4' }}>
-              <img
+              <Image
                 src={imgs[activeImgIdx]}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
                 style={{ opacity: imgFading ? 0 : 1, transition: 'opacity 220ms ease' }}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
               />
               {product.originalPrice && (
                 <span className="absolute top-3 left-3 bg-[#D30005] text-white text-[10px] font-medium uppercase tracking-wider px-2.5 py-1">
@@ -411,7 +418,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     key={sz}
                     onClick={() => setSelectedSize(sz)}
-                    className="h-10 min-w-[40px] px-3 text-[12px] font-medium transition-all"
+                    className="h-11 md:h-10 min-w-[40px] px-3 text-[12px] font-medium transition-all"
                     style={{
                       border: selectedSize === sz ? '1.5px solid #1a1a1a' : '1px solid #D8D8D8',
                       backgroundColor: selectedSize === sz ? '#1a1a1a' : '#fff',
@@ -429,10 +436,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <p className="text-[11px] font-semibold uppercase tracking-wider mb-2.5">Jumlah</p>
               <div className="inline-flex items-center" style={{ border: '1px solid #D8D8D8' }}>
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 flex items-center justify-center text-lg hover:bg-[#f3efe9] transition">−</button>
-                <span className="w-10 text-center text-sm font-medium">{quantity}</span>
+                  className="w-11 h-11 md:w-10 md:h-10 flex items-center justify-center text-lg hover:bg-[#f3efe9] transition">−</button>
+                <span className="w-11 md:w-10 text-center text-sm font-medium">{quantity}</span>
                 <button onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 flex items-center justify-center text-lg hover:bg-[#f3efe9] transition">+</button>
+                  className="w-11 h-11 md:w-10 md:h-10 flex items-center justify-center text-lg hover:bg-[#f3efe9] transition">+</button>
               </div>
             </div>
 
@@ -496,10 +503,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       </section>
 
       {/* ── RECOMMENDATIONS ─────────────────────────────────────────── */}
-      <section className="px-4 md:px-10 py-10 md:py-14" style={{ borderTop: '1px solid #eaeaea' }}>
+      <section className="px-4 md:px-10 py-10 md:py-14 pb-24 md:pb-14" style={{ borderTop: '1px solid #eaeaea' }}>
         <h2
           style={{ fontFamily: "'Playfair Display', serif" }}
-          className="text-2xl md:text-3xl font-normal mb-8"
+          className="text-2xl md:text-3xl font-normal mb-6 md:mb-8"
         >
           Mungkin Kamu Juga Suka
         </h2>
@@ -517,19 +524,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex gap-2 px-4 py-3"
         style={{ backgroundColor: '#faf9f8', borderTop: '1px solid #eaeaea', paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
       >
-        <button
+        <motion.button
           onClick={() => setWishlist(!wishlist)}
           className="w-12 h-12 flex items-center justify-center border hover:bg-[#f3efe9] transition flex-shrink-0"
           style={{ borderColor: '#D8D8D8' }}
+          whileTap={{ scale: 0.88 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 22 }}
         >
           <Heart size={18} fill={wishlist ? 'currentColor' : 'none'} />
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={addToCart}
           className="flex-1 h-12 bg-[#1a1a1a] text-white text-[12px] font-semibold uppercase tracking-widest hover:opacity-80 transition flex items-center justify-center gap-2"
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 22 }}
         >
           <ShoppingBag size={15} /> Tambah ke Keranjang
-        </button>
+        </motion.button>
       </div>
 
       {/* ── TOAST ───────────────────────────────────────────────────── */}

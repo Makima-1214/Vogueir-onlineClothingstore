@@ -56,15 +56,15 @@ export default function CheckoutPage() {
       <Navbar />
 
       {/* Header */}
-      <section className="px-6 md:px-8 py-10 md:py-14" style={{ borderBottom: '1px solid #eaeaea' }}>
+      <section className="px-4 md:px-8 py-10 md:py-14" style={{ borderBottom: '1px solid #eaeaea' }}>
         <p className="text-[0.75rem] font-medium uppercase tracking-[2px] mb-3 text-[#555]">Pembelian</p>
-        <h1 style={{ fontFamily: "'Playfair Display', serif" }} className="text-4xl md:text-5xl font-normal">Checkout</h1>
+        <h1 style={{ fontFamily: "'Playfair Display', serif" }} className="text-[2.2rem] md:text-5xl font-normal">Checkout</h1>
       </section>
 
       {/* Steps */}
-      <section className="flex-1 px-6 md:px-8 py-10">
+      <section className="flex-1 px-4 md:px-8 py-8 md:py-10">
         {/* Step indicator */}
-        <div className="flex gap-0 mb-10 max-w-md">
+        <div className="flex gap-0 mb-8 md:mb-10 max-w-md">
           {['Pengiriman', 'Pembayaran', 'Review'].map((label, i) => {
             const num = i + 1
             const active = step >= num
@@ -75,7 +75,7 @@ export default function CheckoutPage() {
                     style={{ backgroundColor: active ? '#1a1a1a' : '#f0f0f0', color: active ? '#fff' : '#9E9EA0' }}>
                     {step > num ? <Check size={14} /> : num}
                   </div>
-                  <p className="text-[10px] uppercase tracking-wider mt-1.5" style={{ color: active ? '#1a1a1a' : '#9E9EA0' }}>{label}</p>
+                  <p className="text-[10px] uppercase tracking-wider mt-1.5 whitespace-nowrap" style={{ color: active ? '#1a1a1a' : '#9E9EA0' }}>{label}</p>
                 </div>
                 {i < 2 && <div className="flex-1 h-px mx-2 mb-4" style={{ backgroundColor: step > num ? '#1a1a1a' : '#D8D8D8' }} />}
               </div>
@@ -83,14 +83,14 @@ export default function CheckoutPage() {
           })}
         </div>
 
-        <div className="max-w-lg">
+        <div className="w-full max-w-lg">
           <form onSubmit={handlePlaceOrder}>
 
             {/* Step 1: Shipping */}
             {step === 1 && (
               <div className="space-y-4">
-                <h2 style={{ fontFamily: "'Playfair Display', serif" }} className="text-2xl font-normal mb-6">Alamat Pengiriman</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <h2 style={{ fontFamily: "'Playfair Display', serif" }} className="text-2xl font-normal mb-5 md:mb-6">Alamat Pengiriman</h2>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
                   <div>
                     <label className="block text-[11px] font-medium uppercase tracking-widest mb-2">Nama Depan</label>
                     <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required className={inputClass} style={inputStyle} />
@@ -100,7 +100,7 @@ export default function CheckoutPage() {
                     <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required className={inputClass} style={inputStyle} />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                   <div>
                     <label className="block text-[11px] font-medium uppercase tracking-widest mb-2">Email</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} required className={inputClass} style={inputStyle} />
@@ -114,7 +114,7 @@ export default function CheckoutPage() {
                   <label className="block text-[11px] font-medium uppercase tracking-widest mb-2">Alamat</label>
                   <input type="text" name="address" value={formData.address} onChange={handleChange} required className={inputClass} style={inputStyle} />
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
                   <div>
                     <label className="block text-[11px] font-medium uppercase tracking-widest mb-2">Kota</label>
                     <input type="text" name="city" value={formData.city} onChange={handleChange} required className={inputClass} style={inputStyle} />
@@ -123,6 +123,8 @@ export default function CheckoutPage() {
                     <label className="block text-[11px] font-medium uppercase tracking-widest mb-2">Provinsi</label>
                     <input type="text" name="province" value={formData.province} onChange={handleChange} required className={inputClass} style={inputStyle} />
                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
                   <div>
                     <label className="block text-[11px] font-medium uppercase tracking-widest mb-2">Kode Pos</label>
                     <input type="text" name="zip" value={formData.zip} onChange={handleChange} required className={inputClass} style={inputStyle} />
