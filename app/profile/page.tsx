@@ -468,8 +468,7 @@ export default function ProfilePage() {
       </AnimatePresence>
 
       {/* ─── MAIN LAYOUT CONTAINER ────────────────────────────────────────────── */}
-      {/* Mobile: bottom safe padding for sticky tab bar */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-0 md:px-10 py-0 md:py-12 flex flex-col md:flex-row gap-0 md:gap-10 pb-20 md:pb-0">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-0 md:px-10 py-0 md:py-12 flex flex-col md:flex-row gap-0 md:gap-10">
 
         {/* ─── SIDEBAR (Desktop Only) ─────────────────────────────────────────── */}
         <aside className="hidden md:flex w-64 flex-shrink-0 flex-col md:sticky md:top-28 md:self-start">
@@ -519,33 +518,6 @@ export default function ProfilePage() {
             </button>
           </nav>
         </aside>
-
-        {/* ─── MOBILE STICKY BOTTOM TAB BAR ───────────────────────────────────── */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#eaeaea] flex items-stretch" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-          {navItems.slice(0, 5).map((item) => {
-            const active = activeTab === item.value
-            return (
-              <button
-                key={item.value}
-                onClick={() => setActiveTab(item.value as any)}
-                className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 text-[9px] uppercase tracking-wider font-bold transition focus:outline-none ${
-                  active ? 'text-[#1a1a1a]' : 'text-[#aaa]'
-                }`}
-              >
-                <span className={`transition-transform duration-200 ${active ? 'scale-110' : ''}`}>{item.icon}</span>
-                <span className="leading-tight">{item.label.split(' ')[0]}</span>
-                {active && <span className="absolute bottom-0 h-0.5 w-8 bg-[#1a1a1a] rounded-full" />}
-              </button>
-            )
-          })}
-          <button
-            onClick={handleSignOut}
-            className="flex-1 flex flex-col items-center justify-center gap-1 py-3 text-[9px] uppercase tracking-wider font-bold text-[#D30005] transition focus:outline-none"
-          >
-            <LogOut size={16} strokeWidth={1.5} />
-            <span>Keluar</span>
-          </button>
-        </nav>
 
         {/* ─── MAIN CONTENT AREA ──────────────────────────────────────────────── */}
         <section className="flex-1 min-w-0 px-4 sm:px-6 md:px-0 pt-5 md:pt-0">
