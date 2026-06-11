@@ -57,6 +57,7 @@ export function MobileBottomNav() {
 
   useEffect(() => { setMounted(true) }, [])
 
+  const hideNav = pathname !== null && pathname.startsWith('/products/') && pathname !== '/products'
   const profileHref = session?.user ? '/profile' : '/sign-in'
 
   const tabs = [
@@ -72,7 +73,7 @@ export function MobileBottomNav() {
   }, [])
 
   // Don't render on the server — avoids Framer Motion hydration mismatch
-  if (!mounted) return null
+  if (!mounted || hideNav) return null
 
   return (
     <AnimatePresence initial={false}>
