@@ -1,8 +1,9 @@
 'use client'
 
 import { Navbar } from '@/components/navbar'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type MouseEvent } from 'react'
 import Link from 'next/link'
+import { useCart } from '@/hooks/use-cart'
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const ALL_PRODUCTS = [
@@ -76,9 +77,23 @@ function PageFooter() {
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function ProductsPage() {
+  const cart = useCart()
   const [selectedFilter, setSelectedFilter] = useState('All')
   const [selectedSort, setSelectedSort]     = useState('Terbaru')
   const [products, setProducts]             = useState(ALL_PRODUCTS)
+
+  function handleAddToCart(e: MouseEvent<HTMLButtonElement>, product: typeof ALL_PRODUCTS[number]) {
+    e.preventDefault()
+    cart.addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      size: 'M',
+      color: product.swatches[0],
+      img: product.img,
+    })
+  }
 
   useEffect(() => {
     let filtered = [...ALL_PRODUCTS]
@@ -108,35 +123,37 @@ export default function ProductsPage() {
             </h1>
           </div>
 
-          {/* Image duo — pushed right */}
-          <div className="pb-4 flex gap-1.5 ml-auto" style={{ height: 180, width: '75%' }}>
-            <div className="relative overflow-hidden flex-[1.2]">
-              <img
-                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=600&auto=format&fit=crop"
-                alt="Women's collection"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 55%)' }} />
-              <span className="absolute bottom-2 left-2 text-[9px] font-semibold uppercase tracking-wider text-white">Women</span>
-            </div>
-            <div className="flex flex-col gap-1.5 flex-1">
-              <div className="relative overflow-hidden flex-1">
+          {/* Hero images */}
+          <div className="px-4 pb-5">
+            <div className="grid gap-1.5">
+              <div className="relative overflow-hidden rounded-[1.5rem] aspect-[12/10]">
                 <img
-                  src="https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=300&h=300&auto=format&fit=crop"
-                  alt="Men's collection"
+                  src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=600&auto=format&fit=crop"
+                  alt="Women's collection"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 60%)' }} />
-                <span className="absolute bottom-1.5 left-2 text-[9px] font-semibold uppercase tracking-wider text-white">Men</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                <span className="absolute bottom-3 left-3 text-[9px] font-semibold uppercase tracking-wider text-white">Women</span>
               </div>
-              <div className="relative overflow-hidden flex-1">
-                <img
-                  src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&auto=format&fit=crop"
-                  alt="Accessories"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 60%)' }} />
-                <span className="absolute bottom-1.5 left-2 text-[9px] font-semibold uppercase tracking-wider text-white">Accessories</span>
+              <div className="grid grid-cols-2 gap-1.5">
+                <div className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5]">
+                  <img
+                    src="https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=300&h=300&auto=format&fit=crop"
+                    alt="Men's collection"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+                  <span className="absolute bottom-2 left-2 text-[9px] font-semibold uppercase tracking-wider text-white">Men</span>
+                </div>
+                <div className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5]">
+                  <img
+                    src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&auto=format&fit=crop"
+                    alt="Accessories"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+                  <span className="absolute bottom-2 left-2 text-[9px] font-semibold uppercase tracking-wider text-white">Accessories</span>
+                </div>
               </div>
             </div>
           </div>
@@ -158,32 +175,6 @@ export default function ProductsPage() {
             ))}
           </div>
 
-          {/* Quick-browse chips */}
-          <div className="px-4 pb-5 pt-1 flex items-center gap-2 overflow-x-auto scrollbar-none flex-nowrap">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-[#707072] whitespace-nowrap flex-shrink-0 mr-0.5">Browse:</span>
-            {QUICK_CATS.map((cat) => (
-              <button
-                key={cat.label}
-                onClick={() => setSelectedFilter(cat.filter)}
-                className="flex-shrink-0 h-8 px-3.5 text-[11px] font-medium uppercase tracking-wider transition whitespace-nowrap"
-                style={{
-                  border: selectedFilter === cat.filter ? '1px solid #111' : '1px solid #D8D8D8',
-                  backgroundColor: selectedFilter === cat.filter ? '#111' : '#fff',
-                  color: selectedFilter === cat.filter ? '#fff' : '#1a1a1a',
-                }}
-              >
-                {cat.label}
-              </button>
-            ))}
-            <div className="w-px h-5 bg-[#e0e0e0] flex-shrink-0" />
-            <button
-              onClick={() => setSelectedFilter('All')}
-              className="flex-shrink-0 h-8 px-3.5 text-[11px] font-medium uppercase tracking-wider text-white whitespace-nowrap"
-              style={{ backgroundColor: '#D30005' }}
-            >
-              Sale
-            </button>
-          </div>
         </div>
 
         {/* ─── DESKTOP HERO ───────────────────────────────────────────────── */}
@@ -194,53 +185,44 @@ export default function ProductsPage() {
         */}
         <div className="hidden md:block">
 
-          {/* ROW 1 — headline + triptych */}
-          <div className="flex" style={{ minHeight: 340 }}>
-
-            {/* Kiri: hanya headline + satu kalimat — sangat bernapas */}
-            <div className="flex flex-col justify-center px-16 py-16 flex-1">
-              <p className="text-[0.7rem] font-medium uppercase tracking-[2.5px] mb-6 text-[#707072]">
+          <div className="grid lg:grid-cols-[1.3fr_420px] gap-8 px-12 py-12 items-center">
+            <div className="flex flex-col justify-center gap-5">
+              <p className="text-[0.75rem] font-medium uppercase tracking-[2.5px] text-[#707072]">
                 Koleksi Kami · Spring / Summer 2026
               </p>
               <h1
                 style={{ fontFamily: "'Playfair Display', serif" }}
-                className="text-[4.5rem] font-normal leading-[1.0] mb-6"
+                className="text-[3.2rem] md:text-[4.5rem] font-normal leading-[0.95] max-w-[520px]"
               >
-                All<br />Products
+                All Products
               </h1>
-              <p className="text-[14px] text-[#555] leading-relaxed max-w-[380px]">
+              <p className="text-[14px] text-[#555] leading-relaxed max-w-[520px]">
                 Temukan koleksi fashion terbaru yang elegan, nyaman, dan penuh karakter — dipilih untuk setiap momen.
               </p>
             </div>
-
-            {/* Kanan: triptych foto — staggered vertikal */}
-            <div className="flex gap-2 overflow-hidden flex-shrink-0" style={{ width: 520 }}>
-              {HERO_IMGS.map(({ src, alt }, i) => (
-                <div
-                  key={i}
-                  className="relative overflow-hidden flex-1"
-                  style={{
-                    marginTop:    i === 1 ? '-28px' : '28px',
-                    marginBottom: i === 1 ? '28px'  : '-28px',
-                  }}
-                >
-                  <img src={src} alt={alt} className="w-full h-full object-cover" />
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.28) 0%, transparent 52%)' }}
-                  />
+            <div className="grid gap-2">
+              <div className="relative overflow-hidden rounded-[2rem] aspect-[4/5]">
+                <img src={HERO_IMGS[0].src} alt={HERO_IMGS[0].alt} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                <span className="absolute bottom-3 left-3 text-[10px] font-semibold uppercase tracking-widest text-white">Women</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5]">
+                  <img src={HERO_IMGS[1].src} alt={HERO_IMGS[1].alt} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  <span className="absolute bottom-3 left-3 text-[9px] font-semibold uppercase tracking-widest text-white">Men</span>
                 </div>
-              ))}
+                <div className="relative overflow-hidden rounded-[1.5rem] aspect-[4/5]">
+                  <img src={HERO_IMGS[2].src} alt={HERO_IMGS[2].alt} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  <span className="absolute bottom-3 left-3 text-[9px] font-semibold uppercase tracking-widest text-white">Accessories</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* ROW 2 — stats + category tiles dalam strip horizontal */}
-          <div
-            className="flex items-center px-16 py-8"
-            style={{ borderTop: '1px solid #eaeaea' }}
-          >
-            {/* Stats */}
-            <div className="flex items-center gap-12 flex-shrink-0">
+          <div className="flex items-center justify-between px-16 py-8 border-t border-[#eaeaea]">
+            <div className="flex items-center gap-12">
               {[
                 { val: `${ALL_PRODUCTS.length}+`, lbl: 'Produk' },
                 { val: '4',      lbl: 'Kategori' },
@@ -248,10 +230,7 @@ export default function ProductsPage() {
               ].map(({ val, lbl }, i, arr) => (
                 <div key={lbl} className="flex items-center gap-12">
                   <div className="flex flex-col">
-                    <span
-                      className="text-[2.1rem] font-semibold leading-none"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
+                    <span className="text-[2.1rem] font-semibold leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
                       {val}
                     </span>
                     <span className="text-[10px] uppercase tracking-widest text-[#707072] mt-2">{lbl}</span>
@@ -260,51 +239,12 @@ export default function ProductsPage() {
                 </div>
               ))}
             </div>
-
-            {/* Vertical divider */}
-            <div className="w-px self-stretch bg-[#eaeaea] mx-14 flex-shrink-0" />
-
-            {/* Category quick-browse */}
-            <div className="flex flex-col">
-              <p className="text-[10px] font-medium uppercase tracking-wider text-[#707072] mb-3">Browse by Category</p>
-              <div className="flex gap-3 items-center">
-                {QUICK_CATS.map((cat) => (
-                  <button
-                    key={cat.label}
-                    onClick={() => setSelectedFilter(cat.filter)}
-                    className="group relative overflow-hidden flex-shrink-0"
-                    style={{
-                      width: 88,
-                      height: 104,
-                      backgroundColor: '#f3efe9',
-                      outline: selectedFilter === cat.filter ? '2px solid #1a1a1a' : '2px solid transparent',
-                      outlineOffset: '2px',
-                      transition: 'outline-color 0.2s',
-                    }}
-                    aria-label={`Filter ${cat.label}`}
-                  >
-                    <img
-                      src={cat.img}
-                      alt={cat.label}
-                      className="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-65 group-hover:scale-105 transition-all duration-500"
-                    />
-                    <div className="absolute inset-0 flex items-end justify-center pb-2.5">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-[#1a1a1a] text-center leading-tight">
-                        {cat.label}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-                <div className="w-px h-14 bg-[#e8e8e8] mx-2 flex-shrink-0" />
-                <button
-                  onClick={() => setSelectedFilter('All')}
-                  className="flex-shrink-0 self-center h-10 px-5 text-[11px] font-medium uppercase tracking-wider text-white flex items-center gap-2 transition hover:opacity-85"
-                  style={{ backgroundColor: '#D30005' }}
-                >
-                  Sale <ArrowRight size={10} />
-                </button>
-              </div>
-            </div>
+            <button
+              onClick={() => setSelectedFilter('All')}
+              className="flex items-center gap-2 self-start h-11 px-5 text-[11px] font-medium uppercase tracking-wider text-white bg-[#D30005] transition hover:opacity-90"
+            >
+              Sale <ArrowRight size={10} />
+            </button>
           </div>
         </div>
       </section>
@@ -378,6 +318,13 @@ export default function ProductsPage() {
                         {p.badge}
                       </div>
                     )}
+                    <button
+                      type="button"
+                      onClick={(e) => handleAddToCart(e, p)}
+                      className="absolute bottom-0 left-0 right-0 bg-[#1a1a1a] text-white text-[11px] font-medium uppercase tracking-wider py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                    >
+                      + Tambah ke Keranjang
+                    </button>
                   </div>
                   <div className="text-[13px] font-medium mb-0.5">{p.name}</div>
                   <div className="text-[11px] uppercase tracking-wider text-[#707072] mb-2">{p.category}</div>

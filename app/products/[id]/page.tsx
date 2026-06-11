@@ -111,6 +111,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [toast, setToast]                       = useState(false)
   const [wishlist, setWishlist]                 = useState(false)
   const [detailOpen, setDetailOpen]             = useState(false)
+  const [breadcrumbTop, setBreadcrumbTop]       = useState('85px')
 
   const cart = useCart()
   const activeVariant = product?.variants[activeVariantIdx]
@@ -153,6 +154,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   // reset image when variant changes
   useEffect(() => { setActiveImgIdx(0) }, [activeVariantIdx])
+
+  useEffect(() => {
+    const updateBreadcrumbTop = () => {
+      const nav = document.querySelector('nav')
+      if (!nav) return
+      setBreadcrumbTop(`${nav.offsetHeight}px`)
+    }
+
+    updateBreadcrumbTop()
+    window.addEventListener('resize', updateBreadcrumbTop)
+    return () => window.removeEventListener('resize', updateBreadcrumbTop)
+  }, [])
 
   if (!product) {
     return (
@@ -201,8 +214,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       {/* ── BREADCRUMB ──────────────────────────────────────────────── */}
       <div
-        className="px-4 md:px-10 py-3 flex items-center gap-2 text-[11px] text-[#707072] bg-[#faf9f8] sticky top-[60px] md:top-auto z-30"
-        style={{ borderBottom: '1px solid #eaeaea' }}
+        className="px-4 md:px-10 py-3 flex items-center gap-2 text-[11px] text-[#707072] bg-[#faf9f8] sticky z-30"
+        style={{
+          top: breadcrumbTop,
+          borderBottom: '1px solid #eaeaea',
+          transition: 'top 180ms ease',
+        }}
       >
         <button
           onClick={() => router.back()}

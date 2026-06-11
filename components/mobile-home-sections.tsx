@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, X } from 'lucide-react'
 import { ALL_PRODUCTS_LIST } from '@/lib/products'
 import { useCart } from '@/hooks/use-cart'
 import { cartEvents } from '@/components/cart-sidebar'
@@ -126,12 +125,67 @@ const BANNERS = [
 
 // ─── POPULAR CATEGORIES ───────────────────────────────────────────────────────
 const POP_CATEGORIES = [
-  { label: 'Streetwear', emoji: '🧥', href: '/products?style=streetwear' },
-  { label: 'Casual', emoji: '👕', href: '/products?style=casual' },
-  { label: 'Formal', emoji: '👔', href: '/products?style=formal' },
-  { label: 'Accessories', emoji: '👜', href: '/products?category=accessories' },
-  { label: 'Footwear', emoji: '👟', href: '/products?category=footwear' },
-  { label: 'Limited', emoji: '⭐', href: '/products?filter=limited' },
+  {
+    label: 'Streetwear',
+    href: '/products?style=streetwear',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 7l2-2h8l2 2" />
+        <path d="M7 7v10a1 1 0 001 1h8a1 1 0 001-1V7" />
+        <path d="M9 14h6" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Casual',
+    href: '/products?style=casual',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 7l4-2 4 2 4-2 4 2v10a1 1 0 01-1 1H5a1 1 0 01-1-1V7z" />
+        <path d="M8 7v4" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Formal',
+    href: '/products?style=formal',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3l3 6-3 4-3-4 3-6z" />
+        <path d="M9 13l-2 7h10l-2-7" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Accessories',
+    href: '/products?category=accessories',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M7 7v-2a3 3 0 016 0v2" />
+        <path d="M5 7h14l-1.5 11h-11L5 7z" />
+        <path d="M9 18h6" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Footwear',
+    href: '/products?category=footwear',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 16s1.5-3 3-3 3 3 5 3 3-1 4-2 1-4 1-4H5l1 6z" />
+        <path d="M6 16l-1 3h13" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Limited',
+    href: '/products?filter=limited',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2l2.9 5.9L21 9l-4.5 4.4L17.8 21 12 17.6 6.2 21l1.3-7.6L3 9l6.1-1.1L12 2z" />
+      </svg>
+    ),
+  },
 ]
 
 // ─── TRENDING PRODUCTS ────────────────────────────────────────────────────────
@@ -204,99 +258,6 @@ function MiniProductCard({ product }: { product: typeof TRENDING[0] }) {
         Rp {product.price.toLocaleString('id-ID')}
       </p>
     </Link>
-  )
-}
-
-// ─── MOBILE SEARCH BAR ────────────────────────────────────────────────────────
-function MobileSearchBar() {
-  const [query, setQuery] = useState('')
-  const [focused, setFocused] = useState(false)
-  const [results, setResults] = useState<typeof ALL_PRODUCTS_LIST>([])
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (query.trim().length > 1) {
-      setResults(
-        ALL_PRODUCTS_LIST.filter(
-          (p) =>
-            p.name.toLowerCase().includes(query.toLowerCase()) ||
-            p.category.toLowerCase().includes(query.toLowerCase())
-        ).slice(0, 5)
-      )
-    } else {
-      setResults([])
-    }
-  }, [query])
-
-  return (
-    <div className="sticky top-[57px] z-40 bg-[#faf9f8] px-4 py-2.5 border-b border-[#eaeaea]">
-      <div
-        className="flex items-center gap-2.5 px-4 py-2.5 rounded-full transition-all duration-200"
-        style={{
-          background: focused ? '#fff' : '#f0ede9',
-          border: focused ? '1px solid #1a1a1a' : '1px solid transparent',
-          boxShadow: focused ? '0 2px 16px rgba(0,0,0,0.08)' : 'none',
-        }}
-      >
-        <Search size={15} className="text-[#9E9EA0] flex-shrink-0" />
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Search products, styles..."
-          value={query}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setTimeout(() => setFocused(false), 200)}
-          onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 bg-transparent text-[13px] outline-none placeholder-[#9E9EA0]"
-        />
-        <AnimatePresence>
-          {query && (
-            <motion.button
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              onClick={() => setQuery('')}
-              className="flex-shrink-0"
-            >
-              <X size={14} className="text-[#9E9EA0]" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Inline search results */}
-      <AnimatePresence>
-        {focused && results.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            className="absolute left-4 right-4 top-full mt-1 bg-white border border-[#eaeaea] rounded-2xl overflow-hidden shadow-xl z-50"
-          >
-            {results.map((p) => (
-              <Link
-                key={p.id}
-                href={`/products/${p.id}`}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-[#faf9f8] transition"
-              >
-                <img
-                  src={p.variants[0]?.imgs[0]}
-                  alt={p.name}
-                  className="w-10 h-12 object-cover rounded flex-shrink-0"
-                />
-                <div className="min-w-0">
-                  <p className="text-[12px] font-medium truncate">{p.name}</p>
-                  <p className="text-[10px] text-[#9E9EA0] uppercase tracking-wider">{p.category}</p>
-                </div>
-                <p className="text-[12px] font-semibold ml-auto flex-shrink-0">
-                  Rp {p.price.toLocaleString('id-ID')}
-                </p>
-              </Link>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
   )
 }
 
@@ -400,9 +361,6 @@ function BannerCarousel() {
 export function MobileHomeSections() {
   return (
     <div className="md:hidden">
-      {/* Sticky Search */}
-      <MobileSearchBar />
-
       {/* Quick Access Grid */}
       <div className="px-4 pt-5 pb-2">
         <SectionHeader title="Quick Access" />
@@ -452,15 +410,15 @@ export function MobileHomeSections() {
             <Link
               key={cat.label}
               href={cat.href}
-              className="flex-shrink-0 flex flex-col items-center gap-1.5 group"
+              className="flex-shrink-0 flex flex-col items-center gap-2 group"
             >
               <div
-                className="w-[70px] h-[70px] rounded-2xl flex items-center justify-center text-2xl transition-all duration-200 group-active:scale-95"
-                style={{ background: '#f3efe9' }}
+                className="w-[70px] h-[70px] rounded-3xl flex items-center justify-center transition-all duration-200 group-active:scale-95"
+                style={{ background: '#f3efe9', color: '#1a1a1a' }}
               >
-                {cat.emoji}
+                {cat.icon}
               </div>
-              <span className="text-[10px] font-medium text-[#555] tracking-wide whitespace-nowrap">
+              <span className="text-[10px] font-semibold text-[#1a1a1a] tracking-wide whitespace-nowrap text-center">
                 {cat.label}
               </span>
             </Link>

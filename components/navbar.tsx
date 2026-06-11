@@ -98,18 +98,18 @@ export function Navbar() {
   }, [])
 
   const navLinks = [
-    { name: 'Shop', href: '/products' },
-    { name: 'Collections', href: '/collection' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Toko', href: '/products' },
+    { name: 'Koleksi', href: '/collection' },
+    { name: 'Tentang', href: '/about' },
+    { name: 'Kontak', href: '/contact' },
   ]
 
   return (
     <>
       <nav
         className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-          scrolled ? 'bg-white shadow-sm py-3' : 'bg-[#faf9f8] py-5'
-        }`}
+          scrolled ? 'bg-white shadow-sm' : 'bg-[#faf9f8]'
+        } py-4`}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-10 flex items-center justify-between relative">
 
