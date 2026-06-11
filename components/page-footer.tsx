@@ -63,7 +63,7 @@ export function PageFooter() {
             <Link href="/" style={{ fontFamily: "'Playfair Display', serif" }} className="text-xl font-bold tracking-[4px] uppercase">
               VOGUEIR
             </Link>
-            <span className="text-[11px] text-[#9E9EA0] tracking-wider text-center md:text-left">© 2024 Vogueir Fashion. All rights reserved.</span>
+            <span className="text-[11px] text-[#9E9EA0] tracking-wider text-center md:text-left">© 2026 Vogueir Fashion. All rights reserved.</span>
           </div>
           <div className="flex gap-6 text-[10px] text-[#707072] uppercase tracking-widest font-medium">
             <span className="cursor-pointer hover:text-[#1a1a1a] transition">Privacy</span>

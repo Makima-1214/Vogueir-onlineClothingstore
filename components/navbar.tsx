@@ -477,7 +477,7 @@ export function Navbar() {
                     Masuk / Daftar
                   </Link>
                 )}
-                <p className="text-[10px] text-[#9E9EA0] mt-4 uppercase tracking-widest">© 2024 Vogueir Fashion</p>
+                <p className="text-[10px] text-[#9E9EA0] mt-4 uppercase tracking-widest">© 2026 Vogueir Fashion</p>
               </motion.div>
             </div>
           </motion.div>

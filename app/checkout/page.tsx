@@ -209,7 +209,7 @@ export default function CheckoutPage() {
       </section>
 
       <footer className="px-6 md:px-8 py-6 mt-auto" style={{ borderTop: '1px solid #E8E8E8', backgroundColor: '#faf9f8' }}>
-        <p className="text-[11px] text-[#9E9EA0] text-center tracking-wider">© 2024 Vogueir Fashion. Privacy · Terms</p>
+        <p className="text-[11px] text-[#9E9EA0] text-center tracking-wider">© 2026 Vogueir Fashion. Privacy · Terms</p>
       </footer>
     </div>
   )

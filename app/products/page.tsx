@@ -67,7 +67,7 @@ function PageFooter() {
         <div className="flex items-center gap-2">
           <span style={{ fontFamily: "'Playfair Display', serif" }} className="text-base font-semibold tracking-[3px] uppercase">VOGUEIR</span>
           <span className="hidden md:inline text-[#9E9EA0] mx-1">·</span>
-          <span className="text-[11px] text-[#9E9EA0] tracking-wider">© 2024 Vogueir Fashion. All rights reserved.</span>
+          <span className="text-[11px] text-[#9E9EA0] tracking-wider">© 2026 Vogueir Fashion. All rights reserved.</span>
         </div>
         <span className="text-[11px] text-[#9E9EA0] tracking-wider">Privacy · Terms · Cookies</span>
       </div>

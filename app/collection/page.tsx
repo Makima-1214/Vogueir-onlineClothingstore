@@ -37,7 +37,7 @@ const COLLECTIONS = [
     href: '/products',
   },
   {
-    season: 'Spring / Summer 2024',
+    season: 'Spring / Summer 2026',
     name: 'Coastal Breeze',
     desc: 'Terinspirasi dari keindahan pantai — ringan, cerah, dan bebas.',
     img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&auto=format&fit=crop',
@@ -64,7 +64,7 @@ const COLLECTIONS = [
     href: '/products',
   },
   {
-    season: 'Accessories 2024',
+    season: 'Accessories 2026',
     name: 'The Carry-All',
     desc: 'Tas, topi, dan aksesori yang melengkapi setiap outfit dengan sempurna.',
     img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=900&auto=format&fit=crop',

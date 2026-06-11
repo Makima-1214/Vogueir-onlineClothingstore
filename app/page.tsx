@@ -536,7 +536,7 @@ export default function Home() {
               style={{ fontFamily: "'Playfair Display', serif" }}
               className="text-2xl md:text-3xl font-normal mb-3 md:mb-4 leading-[1.2]"
             >
-              Spring / Summer<br />2024
+              Spring / Summer<br />2026
             </h2>
             <p className="text-sm text-[#555] mb-6 md:mb-8 leading-relaxed">
               Koleksi terbaru yang terinspirasi dari keanggunan dan kenyamanan dalam setiap momen.
